@@ -1,0 +1,7 @@
+---
+- import_tasks: pre-checking.yml
+- import_tasks: backup.yml
+- import_tasks: download_pack.yml
+- import_tasks: chown.yml
+- import_tasks: update_db_schema.yml
+- import_tasks: remove_pack.yml

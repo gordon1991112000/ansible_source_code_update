@@ -1,0 +1,16 @@
+---
+- name: Change ownership of /home/junior
+  file:
+     path: "{{home_dir}}"
+     owner: junior
+     group: junior
+     state: directory
+
+- name: change ownership of sub-directories
+  file:
+     path: 
+         - "{{home_dir}}/junior20"
+     owner: junior
+     group: junior
+     recurse: true
+

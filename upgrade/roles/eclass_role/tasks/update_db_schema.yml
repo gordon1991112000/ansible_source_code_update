@@ -1,0 +1,18 @@
+- name: Update db schema
+  shell: 'php dbupdate.php'
+  args:
+     chdir: "{{home_dir}}/intranetIP/admin/eclassupdate/manual_update" 
+
+- name: Update db schema again
+  shell: 'php dbupdate.php'
+  args:
+     chdir: "{{home_dir}}/intranetIP/admin/eclassupdate/manual_update"
+
+- name: Update full schema
+  uri:
+    url: "{{item}}"
+  loop:
+     - "https://{{inventory_hostname}}/addon/ip25/?flag=1&flag2=1&CallFromSameDomain=1"
+     - "http://{{inventory_hostname}}/eclass40/addon/schema/?flag=1&flag2=1&CallFromSameDomain=1"
+  when: Full_Schema == 'true'
+

@@ -1,0 +1,34 @@
+---
+- name: Upgrade
+  hosts: all
+  pre_tasks:
+    - name: Check host
+      debug: var={{inventory_hostname}}
+    - name: Get source code version before update
+      shell: "curl -L --connect-timeout 10 --retry 3 http://{{inventory_hostname}}/ver.php"
+      register: version_number
+    - name: Display the original source code version before update
+      debug: msg="The oringinal source code version of {{inventory_hostname}} is {{version_number.stdout}}"
+    - name: Verify source code version
+      shell: "if echo {{version_number}} | grep -q ej ; then echo 'true' ; else echo 'false' ; fi"
+      register: version_true_false
+    - name: Verify package version
+      shell: "if echo {{package}} | grep -q ej ; then echo 'true' ; else echo 'false' ; fi"
+      register: package_true_false
+    - name: Check if the source code version match with the package version you select
+      fail:
+         msg: "The source code version and your selected package version does not match!!!!"
+      when: version_true_false.stdout != package_true_false.stdout
+
+  roles:
+    - role: junior_role
+      when: version_true_false.stdout == 'true'
+    - role: eclass_role
+      when: version_true_false.stdout == 'false'
+
+  post_tasks:
+    - name: Verify source code version after update
+      shell: "curl -L --connect-timeout 10 --retry 3 http://{{inventory_hostname}}/ver.php"
+      register: latest_version_number
+    - name: Display source code version after update
+      debug: msg="The lastest source code version of {{inventory_hostname}} is {{latest_version_number.stdout}}"

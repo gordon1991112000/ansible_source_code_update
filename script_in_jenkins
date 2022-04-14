@@ -1,0 +1,27 @@
+#!/bin/sh
+export TOWER_CREDS='admin:password'
+export TOWER_HOST=10.0.3.221
+export INVNUM=43
+export timestamp=$(date  +%Y%m%d-%H%M)
+export domain_N=(${domain_name})
+
+rm -f final missing_list
+FIRST_OUTPUT=`curl -s -k -u $TOWER_CREDS http://$TOWER_HOST:7001/api/v2/inventories/$INVNUM/script/?hostvars=1&towervars=1&all=1`
+echo $FIRST_OUTPUT >> first.json
+jq '._meta' first.json |jq -c '.hostvars'|tr '}' '\n'|sed 's/"//g'|sed 's/{//g'|sed 's/,/ /g'|sed 's/^\ //g'|sed 's/:/=/g'|sed 's/=ansible/ ansible/g'|sed -r '/^\s*$/d' >> export_full_list
+if [ -n "$domain_N" ]; then
+     for e in "${domain_N[@]}"; do
+           if grep -q $e export_full_list; then
+                 grep -w $e export_full_list >> final
+           else
+                   echo $e >> missing_list_"$timestamp"
+           fi
+     done
+else
+   mv export_full_list final
+fi
+rm -f first.json export_full_list
+echo "#######MISSING HOST LIST####################"
+cat missing_list_"$timestamp"
+echo "############################################"
+

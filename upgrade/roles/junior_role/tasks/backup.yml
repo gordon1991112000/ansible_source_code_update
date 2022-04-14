@@ -1,0 +1,14 @@
+---
+- name: Create backup directory
+  file:
+    path: /home/juniorBackup/Broadlearning_{{timestamp}}
+    state: directory
+
+- name: Create tar.gz archive backup
+  archive:
+     path: 
+        - "{{home_dir}}/junior20"
+     dest: /home/juniorBackup/Broadlearning_{{timestamp}}/backup.tar.gz
+     format: gz
+     force_archive: true
+

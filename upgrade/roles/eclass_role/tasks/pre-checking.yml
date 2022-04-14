@@ -1,0 +1,32 @@
+---
+- name: Check source code version
+  shell: "curl -L --connect-timeout 10 --retry 3 http://{{inventory_hostname}}/ver.php"
+  register: version_number
+
+- name: Check orginal IP version
+  shell: "if echo {{version_number}} | grep -q ip.2.5 ; then echo 'true' ; elif echo {{version_number}} | grep -q ip.3.0 ; then echo 'false' ; else echo 'null' ; fi"
+  register: ip_version_true_false
+
+- name: Check selected package version
+  shell: "if echo {{package}} | grep -q ip.2.5 ; then echo 'true' ; elif echo {{version_number}} | grep -q ip.3.0 ; then echo 'false' ; else echo 'null' ; fi"
+  register: ip_package_true_false
+
+- name: Compare oringinal IP version with selected package version
+  fail:
+     msg: "The original IP version does not match with your selected IP package version!!!!"
+  when: ip_version_true_false.stdout != ip_package_true_false.stdout
+
+- name: Check OS version
+  fail:
+     msg: "The OS version is not CentOS 7!!!!"
+  when: ansible_distribution != "CentOS" and ansible_distribution_major_version != '7'
+
+- name: Check if /home/eclass/intranetIP exist
+  stat:
+     path: "{{home_dir}}/intranetIP"
+  register: file_data
+
+- name: Fail if directory not exist
+  fail:
+     msg="Directory is not exist"
+  when: not file_data.stat.exists and file_data.stat.isdir

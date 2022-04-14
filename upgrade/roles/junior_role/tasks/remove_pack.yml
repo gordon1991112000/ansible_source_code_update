@@ -1,0 +1,4 @@
+- name: Remove the package
+  file:
+     path: "{{home_dir}}/{{package}}"
+     state: absent

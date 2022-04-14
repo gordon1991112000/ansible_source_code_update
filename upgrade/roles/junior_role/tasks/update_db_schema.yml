@@ -1,0 +1,15 @@
+- name: Update db schema
+  shell: 'php dbupdate-ej.php'
+  args:
+     chdir: "{{home_dir}}/junior20/intranet20/admin/eclassupdate/manual_update" 
+
+- name: Update db schema again
+  shell: 'php dbupdate-ej.php'
+  args:
+     chdir: "{{home_dir}}/junior20/intranet20/admin/eclassupdate/manual_update"
+
+- name: Update full schema
+  uri:
+    url: "http://{{inventory_hostname}}/addon/schema/?flag=1&flag2=1&CallFromSameDomain=1"
+  when: Full_Schema == 'true'
+

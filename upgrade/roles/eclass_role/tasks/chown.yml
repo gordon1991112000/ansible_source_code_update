@@ -1,0 +1,19 @@
+---
+- name: Change ownership of /home/eclass
+  file:
+     path: "{{home_dir}}"
+     owner: eclass
+     group: eclass
+     state: directory
+
+- name: Change ownership of sub-directories
+  file:
+     path: 
+         - "{{home_dir}}/intranetIP"
+         - "{{home_dir}}/eclass30"
+         - "{{home_dir}}/eclass40"
+         - "{{home_dir}}/Smarty"
+     owner: eclass
+     group: eclass
+     recurse: true
+

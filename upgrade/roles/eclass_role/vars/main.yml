@@ -1,0 +1,7 @@
+---
+#home_dir: /home/eclass
+#user: eclass
+#password: x1
+#package: encoded_ip.3.0.2.11.1.0.tar.gz
+#DB_Schema_dir: /home/eclass/intranetIP/admin/eclassupdate/manual_update
+timestamp: $(date +%Y%m%d-%H%M)

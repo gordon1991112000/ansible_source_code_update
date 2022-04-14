@@ -1,0 +1,14 @@
+---
+- name: Download the lastest packages
+  get_url:
+       url: "http://203.80.242.178/temp/{{package}}"
+       dest: "{{home_dir}}"
+       username: "{{user}}"
+       password: "{{password}}"
+
+- name: unarchive packages
+  unarchive:
+       src: "{{home_dir}}/{{package}}"
+       dest: "{{home_dir}}"
+       remote_src: yes
+

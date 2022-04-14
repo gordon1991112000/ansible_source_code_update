@@ -1,0 +1,32 @@
+---
+- name: Check source code version
+  shell: "curl -L --connect-timeout 10 --retry 3 http://{{inventory_hostname}}/ver.php"
+  register: version_number
+
+- name: Check original EJ version
+  shell: "if echo {{version_number}} | grep -q ej.5.0 ; then echo 'true' ; elif echo {{version_number}} | grep -q ej.6.0 ; then echo 'false' ; fi"
+  register: ej_version_true_false
+
+- name: Check selected package version
+  shell: "if echo {{package}} | grep -q ej.5.0 ; then echo 'true' ; elif echo {{version_number}} | grep -q ej.6.0 ; then echo 'false' ; fi"
+  register: ej_package_true_false
+
+- name: Compare original EJ version and selected package version
+  fail:
+    msg: "The original EJ version does not match with your selected EJ package version!!!!"
+  when: ej_version_true_false.stdout != ej_package_true_false.stdout
+
+- name: Check OS version
+  fail:
+    msg: "The OS version is not CentOS 7!!!!"
+  when: ansible_distribution != "CentOS" and ansible_distribution_major_version != '7'
+
+- name: Check if /home/junior/junior20/intranet20 exist
+  stat:
+     path: "{{home_dir}}/junior20/intranet20"
+  register: file_data
+
+- name: Fail if directory not exist
+  fail:
+     msg="Directory is not exist"
+  when: not file_data.stat.exists and file_data.stat.isdir

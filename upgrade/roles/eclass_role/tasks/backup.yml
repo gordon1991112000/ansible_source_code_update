@@ -1,0 +1,18 @@
+---
+- name: Create backup directory
+  file:
+    path: /home/eclassBackup/Broadlearning_{{timestamp}}
+    state: directory
+
+- name: Create tar.gz archive backup
+  archive:
+     path: 
+        - "{{home_dir}}/intranetIP"
+        - "{{home_dir}}/eclass30"
+        - "{{home_dir}}/eclass40"
+        - "{{home_dir}}/lib"
+        - "{{home_dir}}/Smarty"
+     dest: /home/eclassBackup/Broadlearning_{{timestamp}}/backup.tar.gz
+     format: gz
+     force_archive: true
+
