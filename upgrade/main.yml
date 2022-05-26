@@ -1,6 +1,8 @@
 ---
 - name: Upgrade
   hosts: all
+  strategy: free
+  serial: 10
   pre_tasks:
     - name: Check host
       debug: var={{inventory_hostname}}
